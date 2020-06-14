@@ -29,7 +29,7 @@ var getAvatar = function (number) {
   return 'img/avatars/user0' + number + '.png';
 };
 
-//shuffles the array and return N elements
+// shuffles the array and return N elements
 var getRandomElements = function (array, N) {
   var shuffledArray = array.slice();
   var m = shuffledArray.length;
@@ -50,31 +50,31 @@ var generateSimilarAds = function (count) {
 
   for (var i = 0; i < count; i++) {
     var offerType = getRandomArrayElement(OFFER_TYPES);
-    var location_x = getRandomNumber(0, mapWidth);
-    var location_y = getRandomNumber(LOCATION_Y_MIN, LOCATION_Y_MAX);
+    var locationX = getRandomNumber(0, mapWidth);
+    var locationY = getRandomNumber(LOCATION_Y_MIN, LOCATION_Y_MAX);
 
     ads.push({
       'author': {
-            'avatar': getAvatar(i+1)
-          },
+        'avatar': getAvatar(i + 1)
+      },
       'offer': {
-            'title': getRandomArrayElement(TITLES) + offerType,
-            'address': location_x + ', ' + location_y,
-            'price': getRandomNumber(1, 10000),
-            'type': getRandomArrayElement(OFFER_TYPES),
-            'rooms': getRandomNumber(1, 10),
-            'guests': getRandomNumber(1, 20),
-            'checkin': getRandomArrayElement(CHECK_IN_TIMES),
-            'checkout': getRandomArrayElement(CHECK_IN_TIMES),
-            'features': getRandomElements(FEATURES, getRandomNumber(1, FEATURES.length)),
-            'description': getRandomArrayElement(DESCRIPTIONS),
-            'photos': getRandomElements(IMG_LINKS, getRandomNumber(1, IMG_LINKS.length))
-          },
-        'location': {
-            'x': location_x,
-            'y': location_y
-        }
-    })
+        'title': getRandomArrayElement(TITLES) + offerType,
+        'address': locationX + ', ' + locationY,
+        'price': getRandomNumber(1, 10000),
+        'type': getRandomArrayElement(OFFER_TYPES),
+        'rooms': getRandomNumber(1, 10),
+        'guests': getRandomNumber(1, 20),
+        'checkin': getRandomArrayElement(CHECK_IN_TIMES),
+        'checkout': getRandomArrayElement(CHECK_IN_TIMES),
+        'features': getRandomElements(FEATURES, getRandomNumber(1, FEATURES.length)),
+        'description': getRandomArrayElement(DESCRIPTIONS),
+        'photos': getRandomElements(IMG_LINKS, getRandomNumber(1, IMG_LINKS.length))
+      },
+      'location': {
+        'x': locationX,
+        'y': locationY
+      }
+    });
   }
   return ads;
 };
