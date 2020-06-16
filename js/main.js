@@ -6,16 +6,27 @@ var LOCATION_Y_MAX = 630;
 var PIN_WIDTH = 65;
 var PIN_HEIGHT = 80;
 var OFFER_TYPES = ['palace', 'flat', 'house', 'bungalo'];
-var CHECK_IN_TIMES = ['12:00', '13:00', '14:00'];
+var CHECK_IN_TIMES = [];
 var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
-var DESCRIPTIONS = ['perfect for responsible guests on a budget who are traveling by themselves!', 'This is one of city\'s most historic and architecturally eclectic neighborhood. You’ll be close to everything but far enough to enjoy a relaxing trip. We know all the good spots like the delicious pancakes, vanilla infused orange juice and freshly brewed coffee, down the street at one of our favorite restaurants', 'Enjoy your stay in this cozy, newly remodeled studio! This studio is centrally located, a short drive from downtown and the beaches. Wifi and parking are included.', 'Brand new, very clean, studio apartment with a private bathroom, kitchenette and private work space. The studio is renovated with natural stone floors, high end finishings and closets, throughout the apartment.', 'The property is tastefully decorated with colourful patterns and traditional accents.', 'A lovely space to unwind and relax after a busy day whether it is work or play. Awake refreshed and ready for a day exploring the city via this clean, sunny apartment with impressive views. Head out and wander through the nearby farmers’ market and pick up local ingredients to later craft a meal in the fully stocked kitchen.', 'Wonderful coffee shops and restaurants close by. All kitchen items needed for cooking provided by host. Bathrooms stocked with luxury shampoos, conditioners, bath products and more.', 'Indulge in the comfort and tranquility of this contemporary property. The space features an open-concept layout, a monochromatic color scheme with stark contrasts, wood surfaces, and tasteful furnishings and decor.', 'Experience true urban living in this design-conscious property. The edited space features midcentury furnishings and colorful accents, lending it a distinctly liveable feel. Take in sweeping city views from the private balcony.', 'We know how important it is to feel comfortable & relaxed when you arrive back from a long day of sightseeing. This idea is what inspired us to build our apartment studio and provide everyone that stays a place to recharge, relax and enjoy'];
+var DESCRIPTIONS = ['perfect for responsible guests on a budget who are traveling by themselves!', 'This is one of city\'s most historic and architecturally eclectic neighborhood.', 'Enjoy your stay in this cozy, newly remodeled property! It is centrally located, a short drive from downtown.', 'Brand new, very clean with a private bathroom, kitchenette and private work space.', 'The property is tastefully decorated with colourful patterns and traditional accents.', 'A lovely space to unwind and relax after a busy day whether it is work or play.', 'Wonderful coffee shops and restaurants close by. All kitchen items needed for cooking provided by host.', 'Indulge in the comfort and tranquility of this contemporary property. The space features an open-concept layout'];
 var TITLES = ['Luxury Modern ', 'Minimalist Historic ', 'Stylish Luxe ', 'A Modern & Homely ', 'Self Check-in & Parking Sovereign ', 'Executive ', 'Art-Inspired ', 'Explore the City from the Sweetest '];
-var IMG_LINKS = ['https://hips.hearstapps.com/housebeautiful.cdnds.net/18/06/1518192902-shot-01-suffolk-cottage.jpg', 'https://hips.hearstapps.com/housebeautiful.cdnds.net/16/51/renovation-of-the-year-2016-winner-period-home-2.jpg', 'https://hips.hearstapps.com/housebeautiful.cdnds.net/18/06/living_01-modern-oriental.jpg', 'https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/living-room-velvet-style-inspiration-1546446738.jpg', 'https://hips.hearstapps.com/housebeautiful.cdnds.net/17/10/style-inspiration-inky-blues-5.jpg', 'https://hips.hearstapps.com/housebeautiful.cdnds.net/16/10/980x653/cutting-living-room-inspiration.jpg', 'https://hips.hearstapps.com/housebeautiful.cdnds.net/17/23/shot-10_green_botanical_style.jpg', 'https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/living-room-patterns-style-inspiration-2-1522249825.jpg', 'https://hips.hearstapps.com/housebeautiful.cdnds.net/17/24/hb_judymurray_2.jpg', 'https://hips.hearstapps.com/housebeautiful.cdnds.net/16/10/480x516/feb2014-living-room-inspiration.jpg', 'https://hips.hearstapps.com/housebeautiful.cdnds.net/16/10/640x413/daykin-living-room-inspiration.jpg', 'https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/living-feature-florals-home-decor-style-inspiration-1554897383.jpg', 'https://hips.hearstapps.com/housebeautiful.cdnds.net/16/10/640x492/feb2016-living-room-inspiration.jpg', 'https://hips.hearstapps.com/housebeautiful.cdnds.net/17/05/01_hygge_living_room.jpg', 'https://hips.hearstapps.com/housebeautiful.cdnds.net/17/36/1504880328-kelly-willmott-compact-living-room-2.jpg', 'https://hips.hearstapps.com/housebeautiful.cdnds.net/16/52/cottage-kent-3.jpg', 'https://hips.hearstapps.com/housebeautiful.cdnds.net/16/10/flynn-living-room-inspiration.jpg', 'https://hips.hearstapps.com/housebeautiful.cdnds.net/17/48/burnell-christmas-home5.jpg'];
+var IMG_LINKS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
 
+var map  = document.querySelector('.map');
 var pinsMap = document.querySelector('.map__pins');
+var filtersContainer = document.querySelector('.map__filters-container');
+var featuresList = document.querySelectorAll('.popup__feature');
+var pinTemplate = document.querySelector('#pin').content;
+var cardTemplate = document.querySelector('#card').content;
 var mapWidth = pinsMap.clientWidth;
 
-var pinTemplate = document.querySelector('#pin').content;
+
+var TypesMap = {
+  palace: 'Дворец',
+  flat: 'Квартира',
+  house: 'Дом',
+  bungalo: 'Бунгало'
+};
 
 var getRandomNumber = function (min, max) {
   return Math.floor(min + Math.random() * (max - min));
@@ -76,15 +87,16 @@ var generateSimilarAds = function (count) {
       }
     });
   }
+
   return ads;
 };
 
 var renderPin = function (pinData) {
   var pin = pinTemplate.cloneNode(true);
-  pin.querySelector('button').style.left = pinData['location']['x'] - PIN_WIDTH / 2 + 'px';
-  pin.querySelector('button').style.top = pinData['location']['y'] - PIN_HEIGHT + 'px';
-  pin.querySelector('img').src = pinData['author']['avatar'];
-  pin.querySelector('img').alt = pinData['offer']['title'];
+  pin.querySelector('button').style.left = pinData.location.x - PIN_WIDTH / 2 + 'px';
+  pin.querySelector('button').style.top = pinData.location.y - PIN_HEIGHT + 'px';
+  pin.querySelector('img').src = pinData.author.avatar;
+  pin.querySelector('img').alt = pinData.offer.title;
 
   return pin;
 };
@@ -99,7 +111,64 @@ var renderAllPins = function (array) {
   return fragment;
 };
 
+var generateClassesArray = function (array, classPrefix) {
+  var classesArray = array.slice();
+  for (var i = 0; i < array.length; i++) {
+    classesArray[i] = classPrefix + array[i];
+  }
+  return classesArray;
+};
+
+var getCardFeatures = function (offersClasses, template) {
+  var featuresList = template.querySelectorAll('.popup__feature');
+  for (var i = 0; i < featuresList.length; i++) {
+    featuresList[i].classList.add('hidden');
+
+    offersClasses.forEach(function(entry) {
+      if (featuresList[i].classList.contains(entry)) {
+        featuresList[i].classList.remove('hidden');
+      }
+    })
+  }
+};
+
+var createOfferCard = function (item) {
+  var card = cardTemplate.cloneNode(true);
+  var cardPhotos = card.querySelector('.popup__photos');
+  var photoImg = cardPhotos.querySelector('.popup__photo');
+  var featuresClasses = generateClassesArray(item.offer.features, 'popup__feature--');
+  card.querySelector('.popup__title').textContent = item.offer.title;
+  card.querySelector('.popup__text--address').textContent = item.offer.address;
+  card.querySelector('.popup__text--price').textContent = item.offer.price + '₽/ночь';
+  card.querySelector('.popup__type').textContent = TypesMap[item.offer.type];
+  card.querySelector('.popup__text--capacity').textContent = item.offer.rooms + ' комнаты для ' + item.offer.guests + ' гостей';
+  card.querySelector('.popup__text--time').textContent = 'Заезд после ' + item.offer.checkin + ', выезд до ' + item.offer.checkout;
+  card.querySelector('.popup__description').textContent = item.offer.description;
+  card.querySelector('.popup__avatar').src = item.author.avatar;
+
+  getCardFeatures(featuresClasses, card);
+
+  cardPhotos.innerHTML = '';
+
+  for (var i = 0; i < item.offer.photos.length; i++) {
+    var image = photoImg.cloneNode(true);
+    image.src = item.offer.photos[i];
+    cardPhotos.appendChild(image);
+  }
+
+  return card;
+};
+
+var renderCard = function (item) {
+  var fragment = document.createDocumentFragment();
+  fragment.appendChild(createOfferCard(item));
+
+  return fragment;
+}
+
+
 var similarAds = generateSimilarAds(OFFERS_COUNT);
 pinsMap.appendChild(renderAllPins(similarAds));
+map.insertBefore(renderCard(similarAds[0]), filtersContainer);
 
 document.querySelector('.map').classList.remove('map--faded');
