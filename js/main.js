@@ -126,8 +126,8 @@ var getCardFeatures = function (offersClasses, template) {
       if (featuresList[i].classList.contains(entry)) {
         featuresList[i].classList.remove('hidden');
       }
-    })
-  };
+    });
+  }
 };
 
 var createOfferCard = function (item) {
