@@ -6,16 +6,15 @@ var LOCATION_Y_MAX = 630;
 var PIN_WIDTH = 65;
 var PIN_HEIGHT = 80;
 var OFFER_TYPES = ['palace', 'flat', 'house', 'bungalo'];
-var CHECK_IN_TIMES = [];
+var CHECK_IN_TIMES = ['12:00', '13:00', '14:00'];
 var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 var DESCRIPTIONS = ['perfect for responsible guests on a budget who are traveling by themselves!', 'This is one of city\'s most historic and architecturally eclectic neighborhood.', 'Enjoy your stay in this cozy, newly remodeled property! It is centrally located, a short drive from downtown.', 'Brand new, very clean with a private bathroom, kitchenette and private work space.', 'The property is tastefully decorated with colourful patterns and traditional accents.', 'A lovely space to unwind and relax after a busy day whether it is work or play.', 'Wonderful coffee shops and restaurants close by. All kitchen items needed for cooking provided by host.', 'Indulge in the comfort and tranquility of this contemporary property. The space features an open-concept layout'];
 var TITLES = ['Luxury Modern ', 'Minimalist Historic ', 'Stylish Luxe ', 'A Modern & Homely ', 'Self Check-in & Parking Sovereign ', 'Executive ', 'Art-Inspired ', 'Explore the City from the Sweetest '];
 var IMG_LINKS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
 
-var map  = document.querySelector('.map');
+var map = document.querySelector('.map');
 var pinsMap = document.querySelector('.map__pins');
 var filtersContainer = document.querySelector('.map__filters-container');
-var featuresList = document.querySelectorAll('.popup__feature');
 var pinTemplate = document.querySelector('#pin').content;
 var cardTemplate = document.querySelector('#card').content;
 var mapWidth = pinsMap.clientWidth;
@@ -87,7 +86,6 @@ var generateSimilarAds = function (count) {
       }
     });
   }
-
   return ads;
 };
 
@@ -124,12 +122,12 @@ var getCardFeatures = function (offersClasses, template) {
   for (var i = 0; i < featuresList.length; i++) {
     featuresList[i].classList.add('hidden');
 
-    offersClasses.forEach(function(entry) {
+    offersClasses.forEach(function (entry) {
       if (featuresList[i].classList.contains(entry)) {
         featuresList[i].classList.remove('hidden');
       }
     })
-  }
+  };
 };
 
 var createOfferCard = function (item) {
@@ -144,6 +142,7 @@ var createOfferCard = function (item) {
   card.querySelector('.popup__text--capacity').textContent = item.offer.rooms + ' комнаты для ' + item.offer.guests + ' гостей';
   card.querySelector('.popup__text--time').textContent = 'Заезд после ' + item.offer.checkin + ', выезд до ' + item.offer.checkout;
   card.querySelector('.popup__description').textContent = item.offer.description;
+  card.querySelector('.popup__photos').src = 'none';
   card.querySelector('.popup__avatar').src = item.author.avatar;
 
   getCardFeatures(featuresClasses, card);
@@ -164,7 +163,7 @@ var renderCard = function (item) {
   fragment.appendChild(createOfferCard(item));
 
   return fragment;
-}
+};
 
 
 var similarAds = generateSimilarAds(OFFERS_COUNT);
